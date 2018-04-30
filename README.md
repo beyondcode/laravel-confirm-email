@@ -52,7 +52,7 @@ Route::name('auth.confirm')->get('/register/confirm/{confirmation_code}', 'Auth\
 This packages adds some flash messages that contain error/information messages for your users. 
 To show them to your users, add this to your `login.blade.php`:
 
-```
+```blade
 @if (session('confirmation'))
     <div class="alert alert-info" role="alert">
         {{ session('confirmation') }}
