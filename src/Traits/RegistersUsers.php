@@ -27,7 +27,7 @@ trait RegistersUsers
         $user->confirmed_at = now();
         $user->save();
 
-        return redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
+        return redirect(route(config('login_route_name')))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
     }
 
     /**
@@ -43,7 +43,7 @@ trait RegistersUsers
         $user = $model->findOrFail($request->session()->pull('confirmation_user_id'));
         $this->sendConfirmationToUser($user);
 
-        return redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_resent'));
+        return redirect(route(config('login_route_name')))->with('confirmation', __('confirmation::confirmation.confirmation_resent'));
     }
 
     /**
