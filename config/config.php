@@ -12,5 +12,6 @@ return [
     |
     */
     'notification' => \BeyondCode\EmailConfirmation\Notifications\ConfirmEmail::class,
+    'login_route_name' => 'login',
 
 ];
