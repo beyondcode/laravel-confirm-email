@@ -17,7 +17,6 @@ trait AuthenticatesUsers
      *
      * @param  \Illuminate\Http\Request $request
      * @return bool
-     * @throws ValidationException
      */
     protected function attemptLogin(Request $request)
     {
@@ -29,16 +28,14 @@ trait AuthenticatesUsers
             }
 
             session([
-                'confirmation_user_id' => $user->getKey()
+                'confirmation_user_id' => $user->getKey(),
             ]);
 
-            throw ValidationException::withMessages([
-                'confirmation' => [
-                    __('confirmation::confirmation.not_confirmed', [
-                        'resend_link' => route('auth.resend_confirmation')
-                    ])
-                ]
-            ]);
+            $request->session()->flash(
+                'confirmation', __('confirmation::confirmation.not_confirmed', [
+                    'resend_link' => route('auth.resend_confirmation')
+                ])
+            );
         }
         return false;
     }

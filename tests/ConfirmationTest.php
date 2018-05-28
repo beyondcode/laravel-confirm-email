@@ -45,7 +45,9 @@ class ConfirmationTest extends TestCase
         ]);
 
         $response->assertSessionHas('confirmation_user_id', $user->getKey());
-        $response->assertSessionHasErrors('confirmation');
+        $response->assertSessionHas('confirmation', __('confirmation::confirmation.not_confirmed', [
+            'resend_link' => route('auth.resend_confirmation')
+        ]));
         $this->assertFalse(auth()->check());
     }
 
