@@ -55,7 +55,7 @@ To show them to your users, add this to your `login.blade.php`:
 ```blade
 @if (session('confirmation'))
     <div class="alert alert-info" role="alert">
-        {{ session('confirmation') }}
+        {!! session('confirmation') !!}
     </div>
 @endif
 ```
