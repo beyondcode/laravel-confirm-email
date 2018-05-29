@@ -58,6 +58,11 @@ To show them to your users, add this to your `login.blade.php`:
         {{ session('confirmation') }}
     </div>
 @endif
+@if ($errors->has('confirmation') > 0 )
+    <div class="alert alert-danger" role="alert">
+        {{ $errors->first('confirmation') }}
+    </div>
+@endif
 ```
 
 ### Customization
