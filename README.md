@@ -29,14 +29,15 @@ And run the migrations:
 php artisan migrate
 ```
 
-### Configuring the login and register controllers
-In order to make use of the email verification, replace the `AuthenticatesUsers` and `RegistersUsers` traits that
+### Configuring the login, register and forgot password controllers
+In order to make use of the email verification, replace the `AuthenticatesUsers`, `RegistersUsers` and the `SendsPasswordResetEmails` traits that
 come with Laravel, with the ones provided by this package.
 
-These traits can be found in these two files:
+These traits can be found in these three files:
 
 - `App\Http\Controllers\Auth\LoginController`
 - `App\Http\Controllers\Auth\RegisterController`
+- `App\Http\Controllers\Auth\SendsPasswordResetEmails`
 
 ### Add the confirmation and resend routes
 
@@ -58,6 +59,9 @@ To show them to your users, add this to your `login.blade.php`:
         {!! session('confirmation') !!}
     </div>
 @endif
+```
+and this to both your `login.blade.php` and `email.blade.php`
+```blade
 @if ($errors->has('confirmation') > 0 )
     <div class="alert alert-danger" role="alert">
         {!! $errors->first('confirmation') !!}
