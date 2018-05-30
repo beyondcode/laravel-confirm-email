@@ -2,6 +2,7 @@
 
 namespace BeyondCode\EmailConfirmation\Tests;
 
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
 use BeyondCode\EmailConfirmation\Tests\Models\User;
 use BeyondCode\EmailConfirmation\Notifications\ConfirmEmail;
@@ -117,5 +118,25 @@ class ConfirmationTest extends TestCase
         $response = $this->get('/register/confirm/foo');
 
         $response->assertStatus(404);
+    }
+
+    /** @test */
+    public function it_does_not_allow_reset_password_request_for_unconfirmed_users()
+    {
+        Notification::fake();
+
+        $user = User::create([
+            'email' => 'marcel@beyondco.de',
+            'password' => bcrypt('test123'),
+            'confirmed_at' => null,
+        ]);
+
+        $response = $this->post('/password/email', [
+            'email' => 'marcel@beyondco.de',
+        ]);
+
+        $response->assertSessionHasErrors('confirmation');
+
+        Notification::assertNotSentTo($user, ResetPassword::class);
     }
 }

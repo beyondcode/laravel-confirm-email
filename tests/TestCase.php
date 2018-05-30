@@ -2,6 +2,7 @@
 
 namespace BeyondCode\EmailConfirmation\Tests;
 
+use BeyondCode\EmailConfirmation\Tests\Controllers\ForgotPasswordController;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
@@ -82,5 +83,6 @@ class TestCase extends Orchestra
         Route::name('login')->post('/login', LoginController::class.'@login');
         Route::name('auth.resend_confirmation')->get('/resend', RegisterController::class.'@resendConfirmation');
         Route::name('auth.confirm')->get('/register/confirm/{confirmation_code}', RegisterController::class.'@confirm');
+        Route::name('password.email')->post('/password/email', ForgotPasswordController::class.'@sendResetLinkEmail');
     }
 }
