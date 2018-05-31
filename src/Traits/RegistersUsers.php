@@ -61,7 +61,7 @@ trait RegistersUsers
         $this->sendConfirmationToUser($user);
 
         return $this->registered($request, $user)
-            ?: redirect($this->redirectPath())->with('confirmation', __('confirmation::confirmation.confirmation_info'));
+            ?: redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_info'));
     }
 
     /**
