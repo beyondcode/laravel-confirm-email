@@ -135,6 +135,8 @@ class ConfirmationTest extends TestCase
             'email' => 'marcel@beyondco.de',
         ]);
 
+        $response->assertSessionHas('confirmation_user_id', $user->getKey());
+
         $response->assertSessionHasErrors('confirmation');
 
         Notification::assertNotSentTo($user, ResetPassword::class);
