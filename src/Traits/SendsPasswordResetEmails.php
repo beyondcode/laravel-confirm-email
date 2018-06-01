@@ -31,6 +31,9 @@ trait SendsPasswordResetEmails
         // we will throw a validation exception for this error.
         // A user can not request a password reset link if they are not confirmed.
         if (is_null($user->confirmed_at)) {
+
+            session(['confirmation_user_id' => $user->getKey()]);
+
             throw ValidationException::withMessages([
                 'confirmation' => [
                     __('confirmation::confirmation.not_confirmed_reset_password', [
