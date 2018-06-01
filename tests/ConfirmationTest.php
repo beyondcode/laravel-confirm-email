@@ -2,7 +2,9 @@
 
 namespace BeyondCode\EmailConfirmation\Tests;
 
+use BeyondCode\EmailConfirmation\Events\Confirmed;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use BeyondCode\EmailConfirmation\Tests\Models\User;
 use BeyondCode\EmailConfirmation\Notifications\ConfirmEmail;
@@ -138,5 +140,38 @@ class ConfirmationTest extends TestCase
         $response->assertSessionHasErrors('confirmation');
 
         Notification::assertNotSentTo($user, ResetPassword::class);
+    }
+
+    /** @test */
+    public function it_dispatches_confirmed_event_on_successful_confirmation()
+    {
+        Event::fake();
+
+        $user = User::create([
+            'email' => 'marcel@beyondco.de',
+            'password' => bcrypt('test123'),
+            'confirmed_at' => null,
+            'confirmation_code' => 'abcdefg'
+        ]);
+
+        $response = $this->get('/register/confirm/abcdefg');
+
+        Event::assertDispatched(Confirmed::class, function ($e) use ($user) {
+            return $e->user->email === $user->email;
+        });
+
+        $response->assertRedirect('/login');
+    }
+
+    /** @test */
+    public function it_does_not_dispatch_confirmed_event_on_failed_confirmation()
+    {
+        Event::fake();
+
+        $response = $this->get('/register/confirm/foo');
+
+        Event::assertNotDispatched(Confirmed::class);
+
+        $response->assertStatus(404);
     }
 }
