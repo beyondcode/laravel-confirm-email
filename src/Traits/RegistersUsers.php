@@ -27,7 +27,8 @@ trait RegistersUsers
         $user->confirmed_at = now();
         $user->save();
 
-        return redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
+        return $this->confirmed($user)
+            ?: redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
     }
 
     /**
@@ -78,5 +79,16 @@ trait RegistersUsers
         // Notify the user
         $notification = app(config('confirmation.notification'));
         $user->notify($notification);
+    }
+
+
+    /**
+     * The users email address has been confirmed.
+     *
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function confirmed($user) {
+        //
     }
 }
