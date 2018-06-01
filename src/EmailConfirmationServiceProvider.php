@@ -2,9 +2,7 @@
 
 namespace BeyondCode\EmailConfirmation;
 
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\ServiceProvider;
-use BeyondCode\EmailConfirmation\Listeners\CreateConfirmationCode;
 
 class EmailConfirmationServiceProvider extends ServiceProvider
 {
