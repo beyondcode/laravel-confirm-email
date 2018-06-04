@@ -2,6 +2,7 @@
 
 namespace BeyondCode\EmailConfirmation\Traits;
 
+use BeyondCode\EmailConfirmation\Events\Confirmed;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Registered;
 
@@ -27,7 +28,10 @@ trait RegistersUsers
         $user->confirmed_at = now();
         $user->save();
 
-        return redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
+        event(new Confirmed($user));
+
+        return $this->confirmed($user)
+            ?: redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
     }
 
     /**
@@ -78,5 +82,16 @@ trait RegistersUsers
         // Notify the user
         $notification = app(config('confirmation.notification'));
         $user->notify($notification);
+    }
+
+
+    /**
+     * The users email address has been confirmed.
+     *
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function confirmed($user) {
+        //
     }
 }

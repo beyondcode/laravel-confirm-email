@@ -74,6 +74,27 @@ This package comes with a language file, that allows you to modify the error / c
 might see. In addition to that, you can change the notification class that will be used to send the confirmation code
 completely, by changing it in the `config/confirmation.php` file.
 
+### The Confirmed Event
+On successful email confirmation, this package dispatches a `Confirmed` event, in order for you to conveniently handle 
+any custom logic, such as sending a welcome email or automatically logging the user in.
+
+Simply add the `Confirmed` event, and your listeners, to the `EventServiceProvider` in your application:
+
+```php
+    /**
+     * The event listener mappings for the application.
+     *
+     * @var array
+     */
+    protected $listen = [
+        'BeyondCode\EmailConfirmation\Events\Confirmed' => [
+            'App\Listeners\YourOnConfirmedListener'
+        ]
+    ];
+```
+
+For more information about registering events and listeners, please refer to the [Laravel docs](https://laravel.com/docs/events#registering-events-and-listeners).
+
 ### Testing
 
 ``` bash
