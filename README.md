@@ -37,7 +37,7 @@ These traits can be found in these three files:
 
 - `App\Http\Controllers\Auth\LoginController`
 - `App\Http\Controllers\Auth\RegisterController`
-- `App\Http\Controllers\Auth\SendsPasswordResetEmails`
+- `App\Http\Controllers\Auth\ForgotPasswordController`
 
 ### Add the confirmation and resend routes
 
