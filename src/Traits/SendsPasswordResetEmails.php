@@ -30,7 +30,7 @@ trait SendsPasswordResetEmails
         // If the user hasn't confirmed their email address,
         // we will throw a validation exception for this error.
         // A user can not request a password reset link if they are not confirmed.
-        if (is_null($user->confirmed_at)) {
+        if ($user && is_null($user->confirmed_at)) {
 
             session(['confirmation_user_id' => $user->getKey()]);
 
