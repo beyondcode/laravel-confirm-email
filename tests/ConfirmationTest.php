@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use BeyondCode\EmailConfirmation\Tests\Models\User;
 use BeyondCode\EmailConfirmation\Notifications\ConfirmEmail;
+use Illuminate\Support\Facades\URL;
 
 class ConfirmationTest extends TestCase
 {
 
     /** @test */
-    public function it_adds_confirmation_codes_to_registered_users()
+    public function it_sends_confirmation_links_to_registered_users()
     {
         Notification::fake();
 
@@ -26,7 +27,6 @@ class ConfirmationTest extends TestCase
         $user = User::whereEmail('marcel@beyondco.de')->first();
 
         $this->assertNull($user->confirmed_at);
-        $this->assertNotNull($user->confirmation_code);
 
         $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_info'));
 
@@ -71,7 +71,7 @@ class ConfirmationTest extends TestCase
     }
 
     /** @test */
-    public function it_can_resend_confirmation_codes()
+    public function it_can_resend_confirmation_links()
     {
         Notification::fake();
 
@@ -86,7 +86,7 @@ class ConfirmationTest extends TestCase
             'password' => 'test123'
         ]);
 
-        $response = $this->get('/resend');
+        $response = $this->get('/register/resend_confirmation');
 
         $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_resent'));
 
@@ -94,18 +94,17 @@ class ConfirmationTest extends TestCase
     }
 
     /** @test */
-    public function it_can_confirm_valid_codes()
+    public function it_can_confirm_valid_links()
     {
         Notification::fake();
 
-        User::create([
+        $user = User::create([
             'email' => 'marcel@beyondco.de',
             'password' => bcrypt('test123'),
             'confirmed_at' => null,
-            'confirmation_code' => 'abcdefg'
         ]);
 
-        $response = $this->get('/register/confirm/abcdefg');
+        $response = $this->get($this->getConfirmationUrl($user->getKey()));
 
         $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_successful'));
 
@@ -113,13 +112,18 @@ class ConfirmationTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_404_for_invalid_codes()
+    public function it_returns_403_for_invalid_confirmation_links()
     {
-        Notification::fake();
 
-        $response = $this->get('/register/confirm/foo');
+        $user = User::create([
+            'email' => 'marcel@beyondco.de',
+            'password' => bcrypt('test123'),
+            'confirmed_at' => null,
+        ]);
 
-        $response->assertStatus(404);
+        $response = $this->get(route("auth.confirm", ['id' => $user->getKey()])."?signature=haha");
+
+        $response->assertStatus(403);
     }
 
     /** @test */
@@ -153,10 +157,9 @@ class ConfirmationTest extends TestCase
             'email' => 'marcel@beyondco.de',
             'password' => bcrypt('test123'),
             'confirmed_at' => null,
-            'confirmation_code' => 'abcdefg'
         ]);
 
-        $response = $this->get('/register/confirm/abcdefg');
+        $response = $this->get($this->getConfirmationUrl($user->getKey()));
 
         Event::assertDispatched(Confirmed::class, function ($e) use ($user) {
             return $e->user->email === $user->email;
@@ -170,10 +173,44 @@ class ConfirmationTest extends TestCase
     {
         Event::fake();
 
-        $response = $this->get('/register/confirm/foo');
+        $user = User::create([
+            'email' => 'marcel@beyondco.de',
+            'password' => bcrypt('test123'),
+            'confirmed_at' => null,
+        ]);
+
+        $response = $this->get(route("auth.confirm", ['id' => $user->getKey()])."?signature=haha");
 
         Event::assertNotDispatched(Confirmed::class);
 
-        $response->assertStatus(404);
+        $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function it_invalidates_confirmation_link_after_set_timeout()
+    {
+        Notification::fake();
+
+        $user = User::create([
+            'email' => 'marcel@beyondco.de',
+            'password' => bcrypt('test123'),
+            'confirmed_at' => null
+        ]);
+
+        $this->post('/login', [
+            'email' => 'marcel@beyondco.de',
+            'password' => 'test123'
+        ]);
+
+        $response = $this->get('/register/resend_confirmation');
+
+        $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_resent'));
+
+        Notification::assertSentTo($user, ConfirmEmail::class);
+    }
+
+    protected function getConfirmationUrl($id)
+    {
+        return URL::signedRoute("auth.confirm", ['id' => $id]);
     }
 }

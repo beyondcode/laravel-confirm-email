@@ -81,8 +81,8 @@ class TestCase extends Orchestra
     {
         Route::post('/register', RegisterController::class.'@register');
         Route::name('login')->post('/login', LoginController::class.'@login');
-        Route::name('auth.resend_confirmation')->get('/resend', RegisterController::class.'@resendConfirmation');
-        Route::name('auth.confirm')->get('/register/confirm/{confirmation_code}', RegisterController::class.'@confirm');
+        Route::name('auth.resend_confirmation')->get('/register/resend_confirmation', RegisterController::class.'@resendConfirmation');
+        Route::name('auth.confirm')->get('/register/confirm/{id}', RegisterController::class.'@confirm')->middleware('signed');
         Route::name('password.email')->post('/password/email', ForgotPasswordController::class.'@sendResetLinkEmail');
     }
 }
