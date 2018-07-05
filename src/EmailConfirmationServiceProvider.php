@@ -29,6 +29,7 @@ class EmailConfirmationServiceProvider extends ServiceProvider
         }
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'confirmation');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 
     /**
