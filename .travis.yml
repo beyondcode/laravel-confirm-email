@@ -1,7 +1,7 @@
 language: php
 
 php:
-  - 7.1
+  - 7.1.3
   - 7.2
 
 env:
@@ -11,7 +11,7 @@ env:
 
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
+  - travis_retry composer install ${COMPOSER_FLAGS} --no-interaction --prefer-source
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
