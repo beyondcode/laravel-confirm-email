@@ -4,14 +4,9 @@ php:
   - 7.1.3
   - 7.2
 
-env:
-  matrix:
-    - COMPOSER_FLAGS="--prefer-lowest"
-    - COMPOSER_FLAGS=""
-
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer install ${COMPOSER_FLAGS} --no-interaction --prefer-source
+  - travis_retry composer install --no-interaction --prefer-source
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
