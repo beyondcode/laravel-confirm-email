@@ -5,7 +5,10 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/beyondcode/laravel-confirm-email.svg?style=flat-square)](https://scrutinizer-ci.com/g/beyondcode/laravel-confirm-email)
 [![Total Downloads](https://img.shields.io/packagist/dt/beyondcode/laravel-confirm-email.svg?style=flat-square)](https://packagist.org/packages/beyondcode/laravel-confirm-email)
 
-
+## Requirememnts
+- Version 2.x requires PHP 7.1.3 and Laravel 5.6+
+- Version 1.x requires PHP 7.1 and Laravel 5.5+
+ 
 ## Installation
 
 You can install the package via composer:
@@ -15,23 +18,22 @@ composer require beyondcode/laravel-confirm-email
 ```
 
 ## Usage
+> Note: this assumes you've run `php artisan make:auth` first
 
-This package adds a `confirmed_at` and `confirmation_code` field to your users table.
-Publish the migration and the configuration file using 
+- This package adds a `confirmed_at` field to your `users` table. First, publish the migration, configuration file and routes using 
 
 ```bash
 php artisan vendor:publish --provider=BeyondCode\\EmailConfirmation\\EmailConfirmationServiceProvider
 ```
 
-And run the migrations:
+- Then run the migrations:
 
 ```bash
 php artisan migrate
 ```
 
-### Configuring the login, register and forgot password controllers
-In order to make use of the email verification, replace the `AuthenticatesUsers`, `RegistersUsers` and the `SendsPasswordResetEmails` traits that
-come with Laravel, with the ones provided by this package.
+- Replace the `AuthenticatesUsers`, `RegistersUsers` and the `SendsPasswordResetEmails` traits that
+come with Laravel with the ones provided by this package.
 
 These traits can be found in these three files:
 
@@ -39,14 +41,10 @@ These traits can be found in these three files:
 - `App\Http\Controllers\Auth\RegisterController`
 - `App\Http\Controllers\Auth\ForgotPasswordController`
 
-### Add the confirmation and resend routes
-
-Add the following two routes to your `routes/web.php` file:
-
-```php
-Route::name('auth.resend_confirmation')->get('/register/confirm/resend', 'Auth\RegisterController@resendConfirmation');
-Route::name('auth.confirm')->get('/register/confirm/{confirmation_code}', 'Auth\RegisterController@confirm');
-```
+## Routes
+This package adds the routes needed for email verification:
+- the `auth.resend_confirmation` route, which allows a user to request a new confirmation link (for instance, via a form on your site)
+- the `auth.confirm` route, which is the confirmation link sent to the user's email. This package uses Laravel's [signed routes](https://laravel.com/docs/master/urls#signed-urls) to generate these links and tie them to users so there's no need to store them in a database. By default, these confirmation links will expire after 60 minutes. You can change this by setting the `timeout` value in the published `config/cnfirmation.php` file.
 
 ### Show confirmation messages
 
@@ -72,7 +70,7 @@ and this to both your `login.blade.php` and `email.blade.php`
 ### Customization
 This package comes with a language file, that allows you to modify the error / confirmation messages that your user
 might see. In addition to that, you can change the notification class that will be used to send the confirmation code
-completely, by changing it in the `config/confirmation.php` file.
+completely, by changing it in the `config/confirmation.php` file. 
 
 ### The Confirmed Event
 On successful email confirmation, this package dispatches a `Confirmed` event, in order for you to conveniently handle 
