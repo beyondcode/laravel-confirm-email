@@ -2,10 +2,12 @@
 
 namespace BeyondCode\EmailConfirmation\Notifications;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\URL;
 
 class ConfirmEmail extends Notification implements ShouldQueue
 {
@@ -34,7 +36,15 @@ class ConfirmEmail extends Notification implements ShouldQueue
             ->subject(__('confirmation::confirmation.confirmation_subject'))
             ->line(__('confirmation::confirmation.confirmation_subject_title'))
             ->line(__('confirmation::confirmation.confirmation_body'))
-            ->action(__('confirmation::confirmation.confirmation_button'),
-                url("register/confirm/$notifiable->confirmation_code"));
+            ->action(__('confirmation::confirmation.confirmation_button'), $this->confirmationUrl($notifiable));
+    }
+
+    protected function confirmationUrl($notifiable)
+    {
+        return URL::temporarySignedRoute(
+            "auth.confirm",
+            now()->addMinutes(config('confirmation.timeout',60)),
+            ['id' => $notifiable->getKey()]
+        );
     }
 }

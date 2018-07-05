@@ -12,8 +12,7 @@ class AddConfirmationFieldsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dateTime('confirmed_at')->nullable();
-            $table->string('confirmation_code')->nullable();
+            $table->timestamp('confirmed_at')->nullable();
         });
     }
 
@@ -24,7 +23,6 @@ class AddConfirmationFieldsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('confirmed_at');
-            $table->dropColumn('confirmation_code');
         });
     }
 }

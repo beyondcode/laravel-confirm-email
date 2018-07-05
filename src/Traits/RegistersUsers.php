@@ -18,13 +18,11 @@ trait RegistersUsers
      * @param $confirmation_code
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function confirm($confirmation_code)
+    public function confirm(Request $request, $id)
     {
         $model = $this->guard()->getProvider()->createModel();
+        $user = $model->where('id', $id)->firstOrFail();
 
-        $user = $model->where('confirmation_code', $confirmation_code)->firstOrFail();
-
-        $user->confirmation_code = null;
         $user->confirmed_at = now();
         $user->save();
 
@@ -75,10 +73,6 @@ trait RegistersUsers
      */
     protected function sendConfirmationToUser($user)
     {
-        // Create the confirmation code
-        $user->confirmation_code = str_random(25);
-        $user->save();
-
         // Notify the user
         $notification = app(config('confirmation.notification'));
         $user->notify($notification);
