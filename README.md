@@ -20,7 +20,7 @@ This package adds a `confirmed_at` and `confirmation_code` field to your users t
 Publish the migration and the configuration file using 
 
 ```bash
-php artisan vendor:publish --provider=BeyondCode\\EmailConfirmation\\EmailConfirmationServiceProvider
+php artisan vendor:publish --provider=BeyondCode\EmailConfirmation\EmailConfirmationServiceProvider
 ```
 
 And run the migrations:
