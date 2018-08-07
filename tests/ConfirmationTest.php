@@ -28,6 +28,8 @@ class ConfirmationTest extends TestCase
         $this->assertNull($user->confirmed_at);
         $this->assertNotNull($user->confirmation_code);
 
+        $response->assertRedirect('redirectAfterRegistration');
+
         $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_info'));
 
         Notification::assertSentTo($user, ConfirmEmail::class);
@@ -90,6 +92,8 @@ class ConfirmationTest extends TestCase
 
         $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_resent'));
 
+        $response->assertRedirect('redirectAfterConfirmationResent');
+
         Notification::assertSentTo($user, ConfirmEmail::class);
     }
 
@@ -109,7 +113,7 @@ class ConfirmationTest extends TestCase
 
         $response->assertSessionHas('confirmation', __('confirmation::confirmation.confirmation_successful'));
 
-        $response->assertRedirect('/login');
+        $response->assertRedirect('/redirectConfirmationUrl');
     }
 
     /** @test */
@@ -162,7 +166,7 @@ class ConfirmationTest extends TestCase
             return $e->user->email === $user->email;
         });
 
-        $response->assertRedirect('/login');
+        $response->assertRedirect('/redirectConfirmationUrl');
     }
 
     /** @test */

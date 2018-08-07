@@ -74,6 +74,15 @@ This package comes with a language file, that allows you to modify the error / c
 might see. In addition to that, you can change the notification class that will be used to send the confirmation code
 completely, by changing it in the `config/confirmation.php` file.
 
+### Change redirect routes
+You can change all possible redirect routes by including these values either as properties in your registration controller, or as methods returning the route/URL string:
+
+- `redirectConfirmationTo`
+- `redirectAfterRegistrationTo`
+- `redirectAfterResendConfirmationTo`
+
+They all default to `route('login')`.
+
 ### The Confirmed Event
 On successful email confirmation, this package dispatches a `Confirmed` event, in order for you to conveniently handle 
 any custom logic, such as sending a welcome email or automatically logging the user in.

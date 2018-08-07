@@ -13,6 +13,48 @@ trait RegistersUsers
     }
 
     /**
+     * Get redirect path after a successful confirmation.
+     *
+     * @return string
+     */
+    public function redirectAfterConfirmationPath()
+    {
+        if (method_exists($this, 'redirectConfirmationTo')) {
+            return $this->redirectConfirmationTo();
+        }
+
+        return property_exists($this, 'redirectConfirmationTo') ? $this->redirectConfirmationTo : route('login');
+    }
+
+    /**
+     * Get redirect path after a registration that still needs to be confirmed.
+     *
+     * @return string
+     */
+    public function redirectAfterRegistrationPath()
+    {
+        if (method_exists($this, 'redirectAfterRegistrationTo')) {
+            return $this->redirectAfterRegistrationTo();
+        }
+
+        return property_exists($this, 'redirectAfterRegistrationTo') ? $this->redirectAfterRegistrationTo : route('login');
+    }
+
+    /**
+     * Get redirect path after the confirmation was sent.
+     *
+     * @return string
+     */
+    public function redirectAfterResendConfirmationPath()
+    {
+        if (method_exists($this, 'redirectAfterResendConfirmationTo')) {
+            return $this->redirectAfterResendConfirmationTo();
+        }
+
+        return property_exists($this, 'redirectAfterResendConfirmationTo') ? $this->redirectAfterResendConfirmationTo : route('login');
+    }
+
+    /**
      * Confirm a user with a given confirmation code.
      *
      * @param $confirmation_code
@@ -31,7 +73,7 @@ trait RegistersUsers
         event(new Confirmed($user));
 
         return $this->confirmed($user)
-            ?: redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
+            ?: redirect($this->redirectAfterConfirmationPath())->with('confirmation', __('confirmation::confirmation.confirmation_successful'));
     }
 
     /**
@@ -47,7 +89,7 @@ trait RegistersUsers
         $user = $model->findOrFail($request->session()->pull('confirmation_user_id'));
         $this->sendConfirmationToUser($user);
 
-        return redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_resent'));
+        return redirect($this->redirectAfterResendConfirmationPath())->with('confirmation', __('confirmation::confirmation.confirmation_resent'));
     }
 
     /**
@@ -65,7 +107,7 @@ trait RegistersUsers
         $this->sendConfirmationToUser($user);
 
         return $this->registered($request, $user)
-            ?: redirect(route('login'))->with('confirmation', __('confirmation::confirmation.confirmation_info'));
+            ?: redirect($this->redirectAfterRegistrationPath())->with('confirmation', __('confirmation::confirmation.confirmation_info'));
     }
 
     /**

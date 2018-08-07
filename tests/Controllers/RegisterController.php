@@ -24,6 +24,12 @@ class RegisterController extends Controller
     */
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, RegistersUsers;
 
+    protected $redirectConfirmationTo = 'redirectConfirmationUrl';
+
+    protected $redirectAfterRegistrationTo = 'redirectAfterRegistration';
+
+    protected $redirectAfterResendConfirmationTo = 'redirectAfterConfirmationResent';
+
     /**
      * Get a validator for an incoming registration request.
      *
