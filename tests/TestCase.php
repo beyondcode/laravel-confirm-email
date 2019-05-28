@@ -15,7 +15,7 @@ use BeyondCode\EmailConfirmation\Tests\Controllers\RegisterController;
 
 class TestCase extends Orchestra
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
