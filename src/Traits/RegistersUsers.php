@@ -4,6 +4,7 @@ namespace BeyondCode\EmailConfirmation\Traits;
 
 use BeyondCode\EmailConfirmation\Events\Confirmed;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Registered;
 
 trait RegistersUsers
@@ -118,7 +119,7 @@ trait RegistersUsers
     protected function sendConfirmationToUser($user)
     {
         // Create the confirmation code
-        $user->confirmation_code = str_random(25);
+        $user->confirmation_code = Str::random(25);
         $user->save();
 
         // Notify the user
