@@ -1,8 +1,6 @@
 # Laravel Email Confirmation
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/beyondcode/laravel-confirm-email.svg?style=flat-square)](https://packagist.org/packages/beyondcode/laravel-confirm-email)
-[![Build Status](https://img.shields.io/travis/beyondcode/laravel-confirm-email/master.svg?style=flat-square)](https://travis-ci.org/beyondcode/laravel-confirm-email)
-[![Quality Score](https://img.shields.io/scrutinizer/g/beyondcode/laravel-confirm-email.svg?style=flat-square)](https://scrutinizer-ci.com/g/beyondcode/laravel-confirm-email)
 [![Total Downloads](https://img.shields.io/packagist/dt/beyondcode/laravel-confirm-email.svg?style=flat-square)](https://packagist.org/packages/beyondcode/laravel-confirm-email)
 
 
@@ -17,7 +15,7 @@ composer require beyondcode/laravel-confirm-email
 ## Usage
 
 This package adds a `confirmed_at` and `confirmation_code` field to your users table.
-Publish the migration and the configuration file using 
+Publish the migration and the configuration file using
 
 ```bash
 php artisan vendor:publish --provider="BeyondCode\EmailConfirmation\EmailConfirmationServiceProvider"
@@ -50,7 +48,7 @@ Route::name('auth.confirm')->get('/register/confirm/{confirmation_code}', 'Auth\
 
 ### Show confirmation messages
 
-This packages adds some flash messages that contain error/information messages for your users. 
+This packages adds some flash messages that contain error/information messages for your users.
 To show them to your users, add this to your `login.blade.php`:
 
 ```blade
@@ -84,7 +82,7 @@ You can change all possible redirect routes by including these values either as 
 They all default to `route('login')`.
 
 ### The Confirmed Event
-On successful email confirmation, this package dispatches a `Confirmed` event, in order for you to conveniently handle 
+On successful email confirmation, this package dispatches a `Confirmed` event, in order for you to conveniently handle
 any custom logic, such as sending a welcome email or automatically logging the user in.
 
 Simply add the `Confirmed` event, and your listeners, to the `EventServiceProvider` in your application:
