@@ -102,6 +102,15 @@ Simply add the `Confirmed` event, and your listeners, to the `EventServiceProvid
 
 For more information about registering events and listeners, please refer to the [Laravel docs](https://laravel.com/docs/events#registering-events-and-listeners).
 
+## Catch, test and debug application mails with Laravel Herd
+
+Laravel Herd provides an integrated local email service, streamlining the process of testing and debugging application emails.
+The email service organizes emails into distinct inboxes for each application, ensuring they are easily accessible and simple to locate.
+
+[herd.laravel.com](https://herd.laravel.com)
+
+![image](https://github.com/user-attachments/assets/6417907c-119d-43ac-9cf6-5638bafae24f)
+
 ### Testing
 
 ``` bash
